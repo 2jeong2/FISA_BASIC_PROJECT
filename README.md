@@ -25,10 +25,34 @@ SQL은 이 데이터를 탐색, 가공, 분석하기 위해 **가장 기본적�
 * `emp`: 사원 정보 테이블
 
   * 사번, 이름, 직업, 상사번호, 급여, 커미션, 입사일, 부서번호 등
+ 
+    EMPNO|ENAME |JOB      |MGR |HIREDATE               |SAL |COMM|DEPTNO|
+-----+------+---------+----+-----------------------+----+----+------+
+ 7839|KING  |PRESIDENT|    |1981-11-17 00:00:00.000|5000|    |    10|
+ 7698|BLAKE |MANAGER  |7839|1981-05-01 00:00:00.000|2850|    |    30|
+ 7782|CLARK |MANAGER  |7839|1981-06-09 00:00:00.000|2450|    |    10|
+ 7566|JONES |MANAGER  |7839|1981-04-02 00:00:00.000|2975|    |    20|
+ 7788|SCOTT |ANALYST  |7566|1987-07-13 00:00:00.000|3000|    |    20|
+ 7902|FORD  |ANALYST  |7566|1981-12-03 00:00:00.000|3000|    |    20|
+ 7369|SMITH |CLERK    |7902|1980-12-17 00:00:00.000| 800|    |    20|
+ 7499|ALLEN |SALESMAN |7698|1981-02-20 00:00:00.000|1600| 300|    30|
+ 7521|WARD  |SALESMAN |7698|1981-02-22 00:00:00.000|1250| 500|    30|
+ 7654|MARTIN|SALESMAN |7698|1981-09-28 00:00:00.000|1250|1400|    30|
+ 7844|TURNER|SALESMAN |7698|1981-09-08 00:00:00.000|1500|   0|    30|
+ 7876|ADAMS |CLERK    |7788|1987-07-13 00:00:00.000|1100|    |    20|
+ 7900|JAMES |CLERK    |7698|1981-12-03 00:00:00.000| 950|    |    30|
+ 7934|MILLER|CLERK    |7782|1982-01-23 00:00:00.000|1300|    |    10|
 
 * `dept`: 부서 정보 테이블
 
   * 부서번호, 부서명, 위치
+ 
+    DEPTNO|DNAME     |LOC     |
+------+----------+--------+
+    10|ACCOUNTING|NEW YORK|
+    20|RESEARCH  |DALLAS  |
+    30|SALES     |CHICAGO |
+    40|OPERATIONS|BOSTON  |
 
 ---
 
@@ -80,6 +104,7 @@ FROM emp
 WHERE job = 'SALESMAN'
 ORDER BY 연봉 DESC;
 ```
+
 
 ---
 
@@ -232,4 +257,34 @@ ORDER BY 고용일 ASC, 연봉 DESC;
 * 실무에 자주 쓰는 `WHERE`, `ORDER BY`, `LIKE`, `BETWEEN`, `IN`, `NOT IN`
 * 날짜/숫자 조건 및 문자열 패턴 매칭
 * 데이터 조회 로직의 **가독성**, **재사용성** 고려
+
+## 어려웠던 문제
+
+* ### 3️⃣ 돈 많이 버는 사람 이름 TOP 5 출력 
+ > MySQL에서는 LIMIT로 행수를 제한하였지만 Oracle에서는 LIMIT를 사용할 수 없어 행수(ROWNUM)를 제한하는 조건문을 통해 결과를 출력할 수 있었다.
+ 
+**Oracle**
+
+```sql
+SELECT ename
+FROM (
+  SELECT ename
+  FROM emp
+  ORDER BY sal DESC
+)
+WHERE ROWNUM <= 5;
+```
+
+## 트러블슈팅
+
+* 문제를 풀면서 가장 오류가 많이 났던 유형
+  
+* Oracle에서 date 포맷팅 오류
+![image](https://github.com/user-attachments/assets/e4e457bc-1944-486f-9dc3-5e1737c51b4d)
+> Oracle에서 MySQL처럼 원하는 문자열만 '1981-01-01'만 사용하면 위와 같은 오류가 생긴다.
+> Oracle에선 문자열을 date형식으로 자동 변환해 주지 않기 때문에 문자열을 TO_DATE()를 통해 date형식으로 바꿔서 비교해줘야 한다.
+  
+SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981-01-01','YYYY-MM-DD'); 
+SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981-01-01','YYYY-MM-DD'); 
+SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981/01/01','YYYY-MM-DD'); 
 
