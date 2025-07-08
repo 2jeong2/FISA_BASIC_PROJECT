@@ -261,8 +261,10 @@ WHERE ROWNUM <= 5;
 ![image](https://github.com/user-attachments/assets/e4e457bc-1944-486f-9dc3-5e1737c51b4d)
 > Oracle에서 MySQL처럼 원하는 문자열만 '1981-01-01'만 사용하면 위와 같은 오류가 생긴다.
 > Oracle에선 문자열을 date형식으로 자동 변환해 주지 않기 때문에 문자열을 TO_DATE()를 통해 date형식으로 바꿔서 비교해줘야 한다.
-  
+
+```sql
 SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981-01-01','YYYY-MM-DD'); 
 SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981-01-01','YYYY-MM-DD'); 
-SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981/01/01','YYYY-MM-DD'); 
+SELECT ENAME, EMPNO FROM emp WHERE HIREDATE > TO_DATE('1981/01/01','YYYY-MM-DD');
+```
 
